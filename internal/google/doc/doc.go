@@ -15,8 +15,7 @@ import (
 )
 
 var (
-	srv   *docs.Service
-	DocId string
+	srv *docs.Service
 )
 
 func init() {
@@ -98,8 +97,8 @@ func getTokenFromWeb(config *oauth2.Config) (*oauth2.Token, error) {
 	return tok, nil
 }
 
-func InsertText(message string) error {
-	doc, err := srv.Documents.Get(DocId).Do()
+func InsertText(docId, message string) error {
+	doc, err := srv.Documents.Get(docId).Do()
 	if err != nil {
 		return errors.Wrapf(err, "Unable to retrieve data from document")
 	}
@@ -117,15 +116,15 @@ func InsertText(message string) error {
 		},
 	}
 
-	if _, err := srv.Documents.BatchUpdate(DocId, b).Do(); err != nil {
+	if _, err := srv.Documents.BatchUpdate(docId, b).Do(); err != nil {
 		return err
 	}
 
 	return nil
 }
 
-func InsertImage(url string) error {
-	doc, err := srv.Documents.Get(DocId).Do()
+func InsertImage(docId, url string) error {
+	doc, err := srv.Documents.Get(docId).Do()
 	if err != nil {
 		return errors.Wrapf(err, "Unable to retrieve data from document")
 	}
@@ -144,15 +143,15 @@ func InsertImage(url string) error {
 		},
 	}
 
-	if _, err := srv.Documents.BatchUpdate(DocId, b).Do(); err != nil {
+	if _, err := srv.Documents.BatchUpdate(docId, b).Do(); err != nil {
 		return err
 	}
 
 	return nil
 }
 
-func InsertHyperLink(message, url string) error {
-	doc, err := srv.Documents.Get(DocId).Do()
+func InsertHyperLink(docId, message, url string) error {
+	doc, err := srv.Documents.Get(docId).Do()
 	if err != nil {
 		return errors.Wrapf(err, "Unable to retrieve data from document")
 	}
@@ -170,8 +169,8 @@ func InsertHyperLink(message, url string) error {
 		},
 	}
 
-	if _, err := srv.Documents.BatchUpdate(DocId, b).Do(); err != nil {
-		return err
+	if _, err := srv.Documents.BatchUpdate(docId, b).Do(); err != nil {
+		return errors.Wrapf(err, "Add message failed when insert hyper link")
 	}
 
 	b = &docs.BatchUpdateDocumentRequest{
@@ -202,8 +201,8 @@ func InsertHyperLink(message, url string) error {
 		},
 	}
 
-	if _, err := srv.Documents.BatchUpdate(DocId, b).Do(); err != nil {
-		return err
+	if _, err := srv.Documents.BatchUpdate(docId, b).Do(); err != nil {
+		return errors.Wrapf(err, "Update text failed when insert hyper link")
 	}
 
 	return nil
